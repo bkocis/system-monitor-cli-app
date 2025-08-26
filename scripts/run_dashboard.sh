@@ -31,10 +31,11 @@ fi
 
 # Install required packages
 echo "📦 Installing required Python packages..."
-pip install "rich>=13.0.0" "psutil>=5.8.0"
+pip install -r "$SCRIPT_DIR/../requirements.txt"
 
-# Make the Python script executable
-chmod +x "$SCRIPT_DIR/system_dashboard.py"
+# Make the Python scripts executable
+chmod +x "$SCRIPT_DIR/../src/system_monitor/main.py"
+chmod +x "$SCRIPT_DIR/../src/system_monitor/dashboard.py"
 
 
 
@@ -43,5 +44,5 @@ echo "🚀 Launching dashboard..."
 echo "   Press Ctrl+C to exit"
 echo ""
 
-cd "$SCRIPT_DIR"
-python system_dashboard.py "$@"
+cd "$SCRIPT_DIR/.."
+python -m src.system_monitor.main "$@"

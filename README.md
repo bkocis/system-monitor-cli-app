@@ -2,18 +2,22 @@
 
 A beautiful, real-time system monitoring dashboard for the terminal that provides comprehensive insights into your system's performance with live temperature graphs, resource usage, and hardware information.
 
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
 ## ✨ Features
 
 ### 🌡️ **Temperature Monitoring & History**
 - **Real-time temperature tracking** for CPU and GPU
-- **Visual temperature graphs** with 100-point history
-- **Color-coded alerts** (green/yellow/red based on temperature thresholds)
+- **Visual temperature graphs** with configurable history points
+- **Color-coded alerts** (green/yellow/red based on configurable thresholds)
 - **Historical trends** showing temperature patterns over time
 
 ### 💻 **System Resource Monitoring**
 - **CPU usage** with percentage and core count
 - **Memory usage** with detailed used/total breakdown
-- **Real-time updates** every second
+- **Real-time updates** with configurable refresh rate
 - **Percentage-based color coding** for quick status assessment
 
 ### 🎮 **GPU Information**
@@ -28,6 +32,12 @@ A beautiful, real-time system monitoring dashboard for the terminal that provide
 - **Dual view modes**: exact bytes and GB format
 - **Mounted drive information** with usage percentages
 - **Automatic filtering** of virtual/temporary filesystems
+
+### ⚙️ **Configuration System**
+- **JSON-based configuration** with user-friendly defaults
+- **Customizable refresh rates** and temperature thresholds
+- **Configurable display options** and color schemes
+- **Per-user configuration** stored in `~/.config/system-monitor/`
 
 ### 🎨 **Beautiful Terminal UI**
 - **Rich formatting** with colors, emojis, and proper alignment
@@ -45,8 +55,6 @@ A beautiful, real-time system monitoring dashboard for the terminal that provide
 ### Software Dependencies
 - `nvidia-settings` and `nvidia-smi` (for GPU monitoring)
 - `sensors` command (for CPU temperature - usually from `lm-sensors` package)
-- `psutil` Python library
-- `rich` Python library
 
 ### Install System Dependencies
 ```bash
@@ -58,35 +66,59 @@ sudo apt install lm-sensors nvidia-utils-* python3.12 python3.12-venv
 sudo sensors-detect --auto
 ```
 
-## 🚀 Quick Start
+## 🚀 Installation & Quick Start
 
-### Option 1: Automatic Setup (Recommended)
+### Option 1: Install as Python Package (Recommended)
 ```bash
-# Clone or download the project
-git clone <your-repo-url>
+# Clone the repository
+git clone https://github.com/bkocis/system-monitor-cli-app.git
 cd system-monitor-cli-app
 
-# Run the dashboard (automatically sets up everything)
-./run_dashboard.sh
+# Install the package
+pip install -e .
+
+# Run the dashboard
+system-monitor
 ```
 
-### Option 2: Terminal Window Launch
+### Option 2: Development Installation
 ```bash
-# Launch in a dedicated terminal window
-./monitoring_terms.sh
+# Clone the repository
+git clone https://github.com/bkocis/system-monitor-cli-app.git
+cd system-monitor-cli-app
+
+# Set up development environment
+make dev-setup
+source venv/bin/activate
+
+# Run the dashboard
+make run
 ```
 
-### Option 3: Manual Setup
+### Option 3: Script-based Setup
+```bash
+# Clone the repository
+git clone https://github.com/bkocis/system-monitor-cli-app.git
+cd system-monitor-cli-app
+
+# Run using the setup script
+./scripts/run_dashboard.sh
+
+# Or launch in dedicated terminal window
+./scripts/monitoring_terms.sh
+```
+
+### Option 4: Manual Setup
 ```bash
 # Create virtual environment
 python3.12 -m venv venv
 source venv/bin/activate
 
 # Install dependencies
-pip install "rich>=13.0.0" "psutil>=5.8.0"
+pip install -r requirements.txt
 
 # Run dashboard
-python system_dashboard.py
+python -m src.system_monitor.main
 ```
 
 ## 📊 Dashboard Layout
@@ -119,6 +151,128 @@ The dashboard displays information in the following order:
 └─────────────────────────────────────────────┘
 
 Press Ctrl+C to exit
+```
+
+## ⚙️ Configuration
+
+### Configuration File
+The dashboard uses a JSON configuration file located at `~/.config/system-monitor/config.json`. 
+
+**Create custom configuration:**
+```bash
+# Copy default configuration
+mkdir -p ~/.config/system-monitor
+cp config/default.json ~/.config/system-monitor/config.json
+
+# Edit configuration
+nano ~/.config/system-monitor/config.json
+```
+
+### Configuration Options
+```json
+{
+  "refresh_rate": 1.0,
+  "max_history_points": 100,
+  "temperature_thresholds": {
+    "warning": 70,
+    "critical": 80
+  },
+  "display": {
+    "show_gpu": true,
+    "show_network": false,
+    "graph_height": 8,
+    "graph_length": 100
+  },
+  "colors": {
+    "normal": "green",
+    "warning": "yellow", 
+    "critical": "red"
+  }
+}
+```
+
+For detailed configuration options, see [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
+
+## 🔨 Development
+
+### Development Setup
+```bash
+# Clone repository
+git clone https://github.com/bkocis/system-monitor-cli-app.git
+cd system-monitor-cli-app
+
+# Set up development environment
+make dev-setup
+source venv/bin/activate
+
+# Install development dependencies
+make install-dev
+```
+
+### Available Make Commands
+```bash
+make help              # Show available commands
+make install          # Install package in development mode
+make install-dev      # Install with development dependencies
+make test             # Run test suite
+make test-coverage    # Run tests with coverage report
+make lint             # Run linting tools (ruff)
+make format           # Format code (ruff)
+make clean            # Clean build artifacts
+make run              # Run the dashboard
+make build            # Build distribution packages
+```
+
+### Running Tests
+```bash
+# Run all tests
+make test
+
+# Run with coverage
+make test-coverage
+
+# Run specific test file
+pytest tests/test_dashboard.py
+```
+
+### Code Quality
+```bash
+# Format code
+make format
+
+# Check code quality (linting and type checking)
+make lint
+
+# Check formatting without making changes
+make format-check
+```
+
+## 📁 Project Structure
+
+```
+system-monitor-cli-app/
+├── src/system_monitor/        # Main package
+│   ├── __init__.py           # Package initialization
+│   ├── main.py               # CLI entry point
+│   ├── dashboard.py          # Core dashboard logic
+│   └── config.py             # Configuration management
+├── tests/                    # Test suite
+│   ├── test_dashboard.py     # Dashboard tests
+│   └── test_config.py        # Configuration tests
+├── scripts/                  # Shell scripts
+│   ├── run_dashboard.sh      # Main launcher
+│   └── monitoring_terms.sh   # Terminal launcher
+├── config/                   # Configuration files
+│   └── default.json          # Default configuration
+├── docs/                     # Documentation
+│   ├── CONFIGURATION.md      # Configuration guide
+│   └── DEVELOPMENT.md        # Development guide
+├── requirements.txt          # Production dependencies
+├── requirements-dev.txt      # Development dependencies
+├── pyproject.toml           # Modern packaging config
+├── setup.py                 # Package setup
+├── Makefile                 # Development automation
+└── CHANGELOG.md             # Version history
 ```
 
 ## 🎯 Use Cases
@@ -157,32 +311,9 @@ Press Ctrl+C to exit
 - **Adaptive scaling** based on temperature range
 
 ### Color-Coded Metrics
-- **Green**: Normal operation (< 50% usage, < 70°C)
-- **Yellow**: Moderate load (50-75% usage, 70-80°C)  
-- **Red**: High load/temperature (> 75% usage, > 80°C)
-
-## ⚙️ Configuration
-
-### Customizing Update Frequency
-Edit `system_dashboard.py` line 404:
-```python
-with Live(self.create_dashboard(), refresh_per_second=2):  # 2Hz instead of 1Hz
-```
-
-### Adjusting Temperature History
-Edit `system_dashboard.py` line 25:
-```python
-self.max_history_points = 200  # Keep 200 points instead of 100
-```
-
-### Terminal Window Settings
-Edit `monitoring_terms.sh` to customize terminal appearance:
-```bash
-xfce4-terminal --command "bash $SCRIPT_DIR/run_dashboard.sh" \
-  --hide-borders \
-  --geometry 220x48+200+50 \  # Width x Height + X + Y position
-  --hide-scrollbar
-```
+- **Green**: Normal operation (< 50% usage, configurable temperature)
+- **Yellow**: Moderate load (50-75% usage, warning temperature)  
+- **Red**: High load/temperature (> 75% usage, critical temperature)
 
 ## 🛠️ Troubleshooting
 
@@ -204,33 +335,47 @@ sudo sensors-detect --auto
 sensors
 ```
 
+### Configuration Issues
+```bash
+# Reset to default configuration
+rm ~/.config/system-monitor/config.json
+# Will recreate on next run
+
+# Validate JSON configuration
+python -c "import json; json.load(open('~/.config/system-monitor/config.json'))"
+```
+
+### Installation Issues
+```bash
+# Clean installation
+make clean
+pip uninstall system-monitor-cli
+pip install -e .
+
+# Development environment reset
+rm -rf venv
+make dev-setup
+```
+
 ### Permission Issues
 ```bash
 # Make scripts executable
-chmod +x run_dashboard.sh monitoring_terms.sh system_dashboard.py
-```
-
-### Virtual Environment Issues
-```bash
-# Remove and recreate venv
-rm -rf venv
-python3.12 -m venv venv
-source venv/bin/activate
-pip install rich psutil
+chmod +x scripts/run_dashboard.sh scripts/monitoring_terms.sh
 ```
 
 ## 🔍 Technical Details
 
 ### Architecture
-- **Python 3.12** with modern async-friendly design
+- **Python 3.12** with modern packaging standards
 - **Rich library** for terminal UI rendering
 - **psutil** for cross-platform system metrics
-- **subprocess** calls for hardware-specific tools
+- **JSON configuration** with user-friendly defaults
+- **Modular design** with separate concerns
 
 ### Performance
 - **Minimal CPU overhead** (~1-2% CPU usage)
 - **Memory efficient** (~10-20MB RAM usage)
-- **Non-blocking updates** with 1-second refresh rate
+- **Configurable refresh rate** (default: 1 second)
 - **Adaptive terminal sizing** for different screen sizes
 
 ### Data Collection
@@ -238,19 +383,70 @@ pip install rich psutil
 - **GPU**: `nvidia-smi` and `nvidia-settings` integration
 - **Memory**: `psutil.virtual_memory()` and `psutil.swap_memory()`
 - **Disk**: `psutil.disk_usage()` with intelligent filtering
-- **Temperature**: Hardware sensor integration with history tracking
+- **Temperature**: Hardware sensor integration with configurable history
+
+### Testing
+- **Comprehensive test suite** with >90% coverage
+- **Unit tests** for all major components
+- **Mocked external dependencies** for reliable testing
+- **Continuous integration ready**
+
+## 📦 Distribution
+
+### Building Packages
+```bash
+# Build wheel and source distribution
+make build
+
+# Files created in dist/
+ls dist/
+# system_monitor_cli-1.0.0-py3-none-any.whl
+# system_monitor_cli-1.0.0.tar.gz
+```
+
+### Installing from Source
+```bash
+# Install from local directory
+pip install .
+
+# Install in development mode
+pip install -e .
+
+# Install with development dependencies
+pip install -e ".[dev]"
+```
 
 ## 📝 License
 
-This project is open source. Feel free to modify and distribute according to your needs.
+This project is open source under the MIT License. Feel free to modify and distribute according to your needs.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Areas for improvement:
+Contributions are welcome! Please see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for detailed development guidelines.
+
+### Areas for Improvement
 - Support for AMD GPUs
 - Additional sensor types
 - Network monitoring features
 - Export/logging capabilities
-- Configuration file support
+- Windows/macOS support
+
+### Development Workflow
+1. Fork the repository
+2. Create a feature branch
+3. Write tests for new features
+4. Ensure code quality (`make lint`)
+5. Submit a pull request
+
+### Reporting Issues
+Please report bugs and feature requests on [GitHub Issues](https://github.com/bkocis/system-monitor-cli-app/issues).
+
+## 🔗 Links
+
+- **Repository**: https://github.com/bkocis/system-monitor-cli-app
+- **Issues**: https://github.com/bkocis/system-monitor-cli-app/issues
+- **Documentation**: [docs/](docs/)
 
 ---
+
+**Created by Balaz Kocis** | **Professional System Monitoring for the Terminal**
