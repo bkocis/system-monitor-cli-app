@@ -11,12 +11,11 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 setup(
     name="system-monitor-cli",
     version="1.0.0",
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="Balaz Kocis",
     description="A beautiful, real-time system monitoring dashboard for the terminal",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/system-monitor-cli-app",
+    url="https://github.com/bkocis/system-monitor-cli-app",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     classifiers=[
@@ -44,8 +43,8 @@ setup(
     ],
     keywords="system monitoring, CLI, dashboard, temperature, GPU, CPU, memory, disk",
     project_urls={
-        "Bug Reports": "https://github.com/yourusername/system-monitor-cli-app/issues",
-        "Source": "https://github.com/yourusername/system-monitor-cli-app",
-        "Documentation": "https://github.com/yourusername/system-monitor-cli-app#readme",
+        "Bug Reports": "https://github.com/bkocis/system-monitor-cli-app/issues",
+        "Source": "https://github.com/bkocis/system-monitor-cli-app",
+        "Documentation": "https://github.com/bkocis/system-monitor-cli-app#readme",
     },
 )

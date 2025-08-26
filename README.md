@@ -6,6 +6,9 @@ A beautiful, real-time system monitoring dashboard for the terminal that provide
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
+![System Monitor CLI Dashboard](docs/cli-app.jpg)
+*Real-time system monitoring dashboard in your terminal*
+
 ## ✨ Features
 
 ### 🌡️ **Temperature Monitoring & History**
